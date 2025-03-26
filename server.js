@@ -33,11 +33,6 @@ app.post("/send-location", async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   const userAgent = req.headers['user-agent'];
   const language = req.headers['accept-language'];
-  console.log("Localização recebida:");
-  console.log("IP:", ip);
-  console.log("User-Agent:", userAgent);
-  console.log("Language:", language);
-  console.log("Body:", req.body);
 
   const { latitude, longitude, name } = req.body;
 
