@@ -61,7 +61,7 @@
       console.log("Longitude: " + longitude);
 
       // Envia a localização para o backend
-      fetch(`${ENDPOINT_URL}/send-location/ip`, {
+      fetch(`${ENDPOINT_URL}/send-location`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

